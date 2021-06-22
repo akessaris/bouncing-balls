@@ -1,11 +1,14 @@
 class Ball {
-  constructor(x, y, velX, velY, color, size) {
-    this.x = x;
-    this.y = y;
-    this.velX = velX;
-    this.velY = velY;
-    this.color = color;
-    this.size = size;
+  dead = false;
+  
+  constructor(height) {
+
+    this.x = height / 2;
+    this.y = height - 10;
+    this.velX = 0; // TODO: randomize velocity
+    this.velY = -3;
+    this.color = 'blue';
+    this.size = 5;
   }
 
   random(min, max) {
@@ -20,23 +23,17 @@ class Ball {
     ctx.fill();
   }
 
-  update (width, height) {
-    if ((this.x + this.size) >= width) {
-      this.velX = -(this.velX);
+  update (size) {
+    if (
+      (this.x + this.size) >= size || 
+      (this.x - this.size) <= 0 ||
+      (this.y + this.size) >= size || 
+      (this.y - this.size) <= 0
+      ) {
+      this.isDead = true;
+      this.velX = 0;
+      this.velY = 0;
     }
-  
-    if ((this.x - this.size) <= 0) {
-      this.velX = -(this.velX);
-    }
-  
-    if ((this.y + this.size) >= height) {
-      this.velY = -(this.velY);
-    }
-  
-    if ((this.y - this.size) <= 0) {
-      this.velY = -(this.velY);
-    }
-  
     this.x += this.velX;
     this.y += this.velY;
   }

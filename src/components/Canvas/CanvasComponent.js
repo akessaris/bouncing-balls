@@ -1,15 +1,15 @@
 import React, { useRef, useEffect } from 'react';
 
 const CanvasComponent = props => {
-  const { draw, update, ...rest } = props
+  const { population, ...rest } = props
   const canvasRef = useRef(null);
-
-  const width = 500;
-  const height = 500;
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
+
+    const height = population.canvasSize;
+    const width = population.canvasSize;
 
     canvas.width = width;
     canvas.height = height;
@@ -18,20 +18,27 @@ const CanvasComponent = props => {
     let frameCount = 0;
 
     const render = () => {
-      context.clearRect(0, 0, context.canvas.width, context.canvas.height)
-
       frameCount++;
-      update(width, height);
-      draw(context, frameCount)
 
-      animationFrameId = window.requestAnimationFrame(render)
+      context.fillStyle = 'black';
+      context.fillRect(0, 0, width, height);
+
+      if (population.isAllDead()) {
+        console.log('They\'re all dead!');
+      } else {
+        for (const ball of population.balls) {
+          ball.update(width, height);
+          ball.draw(context, frameCount);
+        }
+        animationFrameId = window.requestAnimationFrame(render)
+      }
     }
     render()
     
     return () => {
       window.cancelAnimationFrame(animationFrameId)
     }
-  }, [draw]);
+  }, [population]);
 
   return <canvas ref={canvasRef} {...rest}/>;
 };
