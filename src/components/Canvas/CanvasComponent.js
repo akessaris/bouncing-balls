@@ -23,13 +23,14 @@ const CanvasComponent = props => {
 
       if (population.isAllDead()) {
         console.log('They\'re all dead!');
-      } else {
-        for (const ball of population.balls) {
-          ball.update();
-          ball.draw(context);
-        }
-        animationFrameId = window.requestAnimationFrame(render)
+        population.reset();
+      } 
+
+      for (const ball of population.balls) {
+        ball.update();
+        ball.draw(context);
       }
+      animationFrameId = window.requestAnimationFrame(render)
     }
     render()
     

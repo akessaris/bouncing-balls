@@ -1,5 +1,5 @@
 export default class Brain {
-  index = 0;
+  step = 0;
   coords = [];
 
   constructor (steps, canvasSize) {
@@ -13,12 +13,24 @@ export default class Brain {
     }
   }
 
+  get current () {
+    return this.coords[this.step];
+  }
+
+  get hasNext () {
+    return this.step < this.coords.length;
+  }
+
+  next () {
+    this.step++;
+  }
+
   random (min, max) {
     const num = Math.floor(Math.random() * (max - min + 1)) + min;
     return num;
   }
 
-  getNextCoord () {
-    return this.coords[this.index++] || {};
+  reset () {
+    this.step = 0;
   }
 }
