@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 
 const CanvasComponent = props => {
-  const { population, ...rest } = props
+  const { population, goal, ...rest } = props
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -15,20 +15,18 @@ const CanvasComponent = props => {
     canvas.height = height;
 
     let animationFrameId;
-    let frameCount = 0;
-
     const render = () => {
-      frameCount++;
-
       context.fillStyle = 'black';
       context.fillRect(0, 0, width, height);
+
+      goal.draw(context);
 
       if (population.isAllDead()) {
         console.log('They\'re all dead!');
       } else {
         for (const ball of population.balls) {
-          ball.update(width, height);
-          ball.draw(context, frameCount);
+          ball.update();
+          ball.draw(context);
         }
         animationFrameId = window.requestAnimationFrame(render)
       }
@@ -38,7 +36,7 @@ const CanvasComponent = props => {
     return () => {
       window.cancelAnimationFrame(animationFrameId)
     }
-  }, [population]);
+  }, [population, goal]);
 
   return <canvas ref={canvasRef} {...rest}/>;
 };
