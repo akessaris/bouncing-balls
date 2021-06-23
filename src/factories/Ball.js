@@ -20,6 +20,7 @@ class Ball {
       const distanceFromGoal = this.calculateDistanceFromGoal();
       this.fitness = 1*100 - distanceFromGoal;
     }
+    if (this.fitness < 0) this.fitness = 0;
   }
 
   isOutOfBounds () {

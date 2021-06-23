@@ -1,14 +1,15 @@
 export default class Brain {
   step = 0;
   coords = [];
+  maxStep = Number.MAX_SAFE_INTEGER;
 
   constructor (steps, canvasSize) {
     let x = canvasSize / 2;
     let y = canvasSize - 10;
 
     for (let i = 0; i < steps; i++) {
-      x += this.random(-10, 10);
-      y += this.random(-10, 5);
+      x += this.randomX();
+      y += this.randomY();
       this.coords.push({ x, y });
     }
   }
@@ -18,7 +19,7 @@ export default class Brain {
   }
 
   get hasNext () {
-    return this.step < this.coords.length;
+    return this.step + 1 < this.coords.length && this.step + 1 < this.maxStep;
   }
 
   next () {
@@ -30,7 +31,31 @@ export default class Brain {
     return num;
   }
 
+  randomX () {
+    return this.random(-4, 4);
+  }
+
+  randomY () {
+    return this.random(-4, 2);
+  }
+
   reset () {
     this.step = 0;
+  }
+
+  mutate () {
+    const mutationRate = 0.01; //chance that any vector in directions gets changed
+    for (let i = 0; i < this.coords.length; i++) {
+      const rand = Math.random();
+      if (rand < mutationRate) {
+        const prevX = this.coords[i-1]?.x ?? 0;
+        const prevY = this.coords[i-1]?.y ?? 0;
+
+        const x = prevX + this.randomX();
+        const y = prevY + this.randomY();
+
+        this.coords[i] = { x, y };
+      }
+    }
   }
 }

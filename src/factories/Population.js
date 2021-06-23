@@ -2,6 +2,7 @@ import Ball from './Ball';
 
 export default class Population {
   balls = [];
+  gen = 0;
 
   constructor(num, canvasSize) {
     this.canvasSize = canvasSize;
@@ -30,18 +31,41 @@ export default class Population {
     },null)
   }
 
-  // Choose the balls that performed the best
-  naturalSelection () {
-    const bestBall = this.getBestBall();
-    bestBall.isBest = true;
-
-    this.balls.forEach(ball => {
-      ball.brain.coords = [...bestBall.brain.coords];
-    });
+  getFitnessSum () {
+    return this.balls.reduce((acc, { fitness }) => acc += fitness,0);
   }
 
-  // Add slight mutation
-  mutate () {
+  //this function works by randomly choosing a value between 0 and the sum of all the fitnesses
+  //then go through all the dots and add their fitness to a running sum and if that sum is greater than the random value generated that dot is chosen
+  //since dots with a higher fitness function add more to the running sum then they have a higher chance of being chosen
+  selectChild (fitnessSum) {
+    const rand = Math.random() * fitnessSum;
+    let runningSum = 0;
+    for (let i = 0; i< this.balls.length; i++) {
+      runningSum+= this.balls[i].fitness;
+      if (runningSum > rand) {
+        return this.balls[i];
+      }
+    }
+    //should never get to this point
+    return this.balls[0];
+  }
+
+  // Choose the balls that performed the best
+  naturalSelection () {
+    // Get best performing ball to make sure we don' mutate it
+    this.balls[0] = this.getBestBall();
+    this.balls[0].isBest = true;
+
+    const maxStep = this.balls[0].brain.step;
+
+    // Set next generation based on fitness
+    const fitnessSum = this.getFitnessSum();
+    for (let i = 1; i < this.balls.length; i++) {
+      this.balls[i] = this.selectChild(fitnessSum);
+      this.balls[i].brain.mutate();
+      this.balls[i].maxStep = maxStep;
+    }
   }
 
   restart () {
@@ -53,7 +77,7 @@ export default class Population {
   // Reset game state, prioritize best performers
   reset () {
     this.naturalSelection();
-    this.mutate();
     this.restart();
+    this.gen++;
   }
 }
