@@ -5,8 +5,11 @@ class Ball {
   reachedGoal = false;
   fitness = 0;
   isBest = false;
+
+  static id = 0;
   
   constructor(canvasSize) {
+    this._id = Ball.id++;
     this.color = 'blue';
     this.size = 5;
     this.canvasSize = canvasSize;
@@ -15,12 +18,11 @@ class Ball {
 
   calculateFitness () {
     if (this.reachedGoal) {
-      this.fitness = 1*1000 - this.brain.step;
+      this.fitness = 1.0/16 + 1.0*10000/(this.brain.step*this.brain.step);
     } else {
       const distanceFromGoal = this.calculateDistanceFromGoal();
-      this.fitness = 1*100 - distanceFromGoal;
+      this.fitness = 1.0/(distanceFromGoal*distanceFromGoal);
     }
-    if (this.fitness < 0) this.fitness = 0;
   }
 
   isOutOfBounds () {
@@ -47,7 +49,7 @@ class Ball {
 
   hasReachedGoal () {
     const dist = this.calculateDistanceFromGoal();
-    return dist < this.size;
+    return dist < this.size + 5;
   }
 
   reset () {
@@ -77,9 +79,10 @@ class Ball {
       this.move();
       if (this.hasReachedGoal()) {
         this.reachedGoal = true;
-        this.calculateFitness();
       } else if (this.isOutOfBounds()) {
         this.dead = true;
+      }
+      if (this.reachedGoal || this.dead) {
         this.calculateFitness();
       }
     }

@@ -44,11 +44,11 @@ export default class Population {
     for (let i = 0; i< this.balls.length; i++) {
       runningSum+= this.balls[i].fitness;
       if (runningSum > rand) {
-        return this.balls[i];
+        return this.balls[i].brain.clone()
       }
     }
     //should never get to this point
-    return this.balls[0];
+    return null;
   }
 
   // Choose the balls that performed the best
@@ -63,7 +63,7 @@ export default class Population {
     // Set next generation based on fitness
     const fitnessSum = this.getFitnessSum();
     for (let i = 1; i < this.balls.length; i++) {
-      this.balls[i] = this.selectChild(fitnessSum);
+      this.balls[i].brain = this.selectChild(fitnessSum);
       this.balls[i].brain.mutate(minStep);
     }
   }

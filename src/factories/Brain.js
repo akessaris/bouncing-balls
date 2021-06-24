@@ -45,9 +45,15 @@ export default class Brain {
     this.step = 0;
   }
 
+  clone() {
+    const clone = new Brain(this.canvasSize);
+    clone.coords = [...this.coords];
+    return clone;
+  }
+
   mutate (minStep) {
     // Make sure we're not exceeding the minumum number of steps
-    this.coords.splice(minStep);
+    this.coords.splice(minStep + 1);
 
     const mutationRate = 0.01; //chance that any vector in directions gets changed
     for (let i = 1; i < this.coords.length; i++) {
