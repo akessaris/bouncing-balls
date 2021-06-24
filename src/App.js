@@ -7,7 +7,7 @@ import Goal from './factories/Goal';
 function App() {
   const canvasSize = 1000;
   const population = new Population(1000, canvasSize);
-  const goal = new Goal(canvasSize/2, 40);
+  const goal = new Goal(canvasSize/2, canvasSize - 40);
   
   return (
     <div className="App">

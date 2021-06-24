@@ -10,7 +10,7 @@ class Ball {
     this.color = 'blue';
     this.size = 5;
     this.canvasSize = canvasSize;
-    this.brain = new Brain(1000, canvasSize);
+    this.brain = new Brain(canvasSize);
   }
 
   calculateFitness () {
@@ -42,7 +42,7 @@ class Ball {
 
   calculateDistanceFromGoal () {
     const { x, y } = this.brain.current;
-    return this.calculateDistance(x, y, this.canvasSize / 2, 40);
+    return this.calculateDistance(x, y, this.canvasSize / 2, this.canvasSize - 40);
   }
 
   hasReachedGoal () {

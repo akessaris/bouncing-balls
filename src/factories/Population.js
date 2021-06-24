@@ -54,17 +54,17 @@ export default class Population {
   // Choose the balls that performed the best
   naturalSelection () {
     // Get best performing ball to make sure we don' mutate it
-    this.balls[0] = this.getBestBall();
-    this.balls[0].isBest = true;
+    const bestBall = this.getBestBall();
+    this.balls[0] = bestBall
+    bestBall.isBest = true;
 
-    const maxStep = this.balls[0].brain.step;
+    const minStep = bestBall.brain.step;
 
     // Set next generation based on fitness
     const fitnessSum = this.getFitnessSum();
     for (let i = 1; i < this.balls.length; i++) {
       this.balls[i] = this.selectChild(fitnessSum);
-      this.balls[i].brain.mutate();
-      this.balls[i].maxStep = maxStep;
+      this.balls[i].brain.mutate(minStep);
     }
   }
 
